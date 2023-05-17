@@ -42,13 +42,15 @@ def new_link():
 @app.route('/table')
 def table_page():
     links = repository.get()
-    url_for("red_endpoint", hash_id='sadklasmd',_external=True)
     return render_template('table.html', links=links)
 
 
 @app.route('/<hash_id>')
 def red_endpoint(hash_id):
-    pass
+    a = repository.get(hash_id)
+    repository.update(a, 1)
+    return redirect(a.url)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
