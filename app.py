@@ -24,6 +24,11 @@ app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 
 
+def remove_table_link(link, page):
+    repository.remove_link(link)
+    return redirect(url_for(page))
+
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -42,7 +47,7 @@ def new_link():
 @app.route('/table')
 def table_page():
     links = repository.get()
-    return render_template('table.html', links=links)
+    return render_template('table.html', links=links, repository=repository)
 
 
 @app.route('/<hash_id>')

@@ -7,6 +7,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional, Dict, Union, overload, List
 
+from flask import redirect
+
 
 @dataclass
 class Link:
@@ -47,6 +49,9 @@ class LinkRepository(ABC):
     def create(self, link: Link) -> Link:
         pass
 
+    def remove_link(self, link):
+        pass
+
 
 class InMemoryLinkRepository(LinkRepository):
     def __init__(self) -> None:
@@ -74,6 +79,9 @@ class InMemoryLinkRepository(LinkRepository):
         link.views += add_views
         self._links[link.hash_id] = link
         return link
+
+    def remove_link(self, link):
+        os.remove("/db/" + link.hash_id + ".txt")
 
 
 class FileSystemLinkRepository(LinkRepository):
@@ -117,6 +125,10 @@ class FileSystemLinkRepository(LinkRepository):
         with open(os.path.join(self.path, f"{link.hash_id}.txt"), "w") as f:
             json.dump(link.to_dict(), fp=f)
         return link
+
+    def remove_link(self, link):
+        os.remove("/Users/aleksandrkokov/PycharmProjects/link_shortner/LisH/db/" + link.hash_id + ".txt")
+        return redirect("/table")
 
 
 repository = FileSystemLinkRepository(os.getcwd())
